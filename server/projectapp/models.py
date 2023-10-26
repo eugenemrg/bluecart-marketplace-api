@@ -1,7 +1,7 @@
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy_serializer import SerializerMixin
 
-from config import db, bcrypt
+from projectapp.config import db, bcrypt
 from sqlalchemy.orm import validates
 
 
@@ -47,7 +47,7 @@ class SearchHistory(db.Model, SerializerMixin):
     name = db.Column(db.String)
     search_date = db.Column(db.DateTime)
 
-    User = db.relationship('User' ,back_populate= 'SearchHistory')
+    User = db.relationship('User' ,backref= 'SearchHistory')
 
     @validates('name')
     def validate_name(self, value):
