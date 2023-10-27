@@ -55,3 +55,9 @@ class SearchHistory(db.Model, SerializerMixin):
             raise ValueError('Search history name must be at least 3 characters long.')
 
 
+"Authentication"
+"Routes"
+" session"
+"Documentation"
+"Request handling"
+"shipping cost"
