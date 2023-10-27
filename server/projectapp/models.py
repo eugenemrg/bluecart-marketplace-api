@@ -13,18 +13,18 @@ class User(db.Model, SerializerMixin):
     username = db.Column(db.String, unique = True, nullable=False)
     email = db.Column(db.String, unique=True, nullable=False)
 
-    search_history = db.relationship('SearchHistory', backref="user")
+    search_history = db.relationship('SearchHistory', backref='user')
 
-    @validates('username')
-    def validate_username(self, value):
-        if len(value) < 3:
-            raise ValueError('Username must be at least  3 characters long.')
+    # @validates('username')
+    # def validate_username(self, key,value):
+    #     if len(value) < 3:
+    #         raise ValueError('Username must be at least  3 characters long.')
 
     
-    @validates('email')
-    def validate_email(self, value):
-        if not value.endswith('@example.com'):
-            raise ValueError('Email must end with @example.com.')
+    # @validates('email')
+    # def validate_email(self, key, value):
+    #     if not value.endswith('@gmail.com'):
+    #         raise ValueError('Email must end with @gmail.com.')
 
     @hybrid_property
     def password_hash(self):
@@ -46,8 +46,8 @@ class SearchHistory(db.Model, SerializerMixin):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     name = db.Column(db.String)
     search_date = db.Column(db.DateTime)
+    
 
-    User = db.relationship('User' ,backref= 'SearchHistory')
 
     @validates('name')
     def validate_name(self, value):
