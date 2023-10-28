@@ -134,7 +134,6 @@ def delete_profile():
         return jsonify({"msg": str(e)}), 500
 
 
-"""
 
 #  API keys and  headers or parameters
 amazon_api_key = '355db28ab7msh93f4cc83a76dbbcp154e0cjsn5279bcdc45dc'
@@ -190,7 +189,6 @@ def delete_history(id):
 
     return jsonify({"message": "History entry deleted successfully", "id": id}), 200
 
-"""
 if __name__ == '__main__':
     app.run(debug=True)
 
