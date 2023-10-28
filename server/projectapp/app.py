@@ -180,7 +180,7 @@ def delete_history(id):
     connection = sqlite3.connect('app.db')
     cursor = connection.cursor()
 
-    # Deleting the history entry with the specified ID
+    # Deleting the history entry with  specified ID
     cursor.execute("DELETE FROM history WHERE id=?", (id,))
 
     # Saved the changes to the database
