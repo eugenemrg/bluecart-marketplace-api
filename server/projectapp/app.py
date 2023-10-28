@@ -26,7 +26,7 @@ jwt = JWTManager(app)
 
 @app.route('/')
 def hello_world():
-    return 'Hello, World!'
+    return 'Hello, World welcome to my App!'
 
 
 @app.route('/users', methods=['GET'])
