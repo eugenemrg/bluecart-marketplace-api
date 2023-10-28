@@ -183,7 +183,7 @@ def delete_history(id):
     # Deleting the history entry with the specified ID
     cursor.execute("DELETE FROM history WHERE id=?", (id,))
 
-    # Saving the changes to the database
+    # Saved the changes to the database
     connection.commit()
     connection.close()
 
