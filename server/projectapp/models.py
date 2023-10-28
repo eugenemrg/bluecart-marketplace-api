@@ -1,37 +1,30 @@
-from flask_sqlalchemy  import SQLAlchemy
-from flask import Flask
-from sqlalchemy.orm import validates
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey,ValidationError
-from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.ext.hybrid import hybrid_property
-from datetime import datetime
-from flask_bcrypt import Bcrypt
+from sqlalchemy_serializer import SerializerMixin
 
-app = Flask(__name__)
+from projectapp.config import db, bcrypt
+from sqlalchemy.orm import validates
 
-db = SQLAlchemy()
-bcrypt = Bcrypt(app)
 
 class User(db.Model, SerializerMixin):
     __tablename__ = 'users'
 
     serialize_rules = ('-reviews.user', )
-    id = Column(Integer, primary_key=True)
-    username = Column(String, unique = True, nullable=False)
-    email = Column(String, unique=True, nullable=False)
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String, unique = True, nullable=False)
+    email = db.Column(db.String, unique=True, nullable=False)
 
-    search_history = db.relationship('User')
+    search_history = db.relationship('SearchHistory', backref='user')
 
-    @validates('username')
-    def validate_username(self, value):
-        if len(value) < 3:
-            raise ValidationError('Username must be at least  3 characters long.')
+    # @validates('username')
+    # def validate_username(self, key,value):
+    #     if len(value) < 3:
+    #         raise ValueError('Username must be at least  3 characters long.')
 
     
-    @validates('email')
-    def validate_email(self, value):
-        if not value.endswith('@example.com'):
-            raise ValidationError('Email must end with @example.com.')
+    # @validates('email')
+    # def validate_email(self, key, value):
+    #     if not value.endswith('@gmail.com'):
+    #         raise ValueError('Email must end with @gmail.com.')
 
     @hybrid_property
     def password_hash(self):
@@ -49,15 +42,22 @@ class User(db.Model, SerializerMixin):
 class SearchHistory(db.Model, SerializerMixin):
     __tablename__ = 'search_history'
 
-    id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey('users.id'))
-    name = Column(String)
-    search_date = Column(DateTime)
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    name = db.Column(db.String)
+    search_date = db.Column(db.DateTime)
+    
 
-    User = db.relationship('User' ,back_populate= 'SearchHistory')
 
     @validates('name')
     def validate_name(self, value):
         if len(value) < 3:
-            raise ValidationError('Search history name must be at least 3 characters long.')
+            raise ValueError('Search history name must be at least 3 characters long.')
 
+
+"Authentication"
+"Routes"
+" session"
+"Documentation"
+"Request handling"
+"shipping cost"
