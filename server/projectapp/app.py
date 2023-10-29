@@ -123,42 +123,59 @@ def delete_profile():
 
 
 #  API keys and  headers or parameters
-amazon_api_key = '355db28ab7msh93f4cc83a76dbbcp154e0cjsn5279bcdc45dc'
-ebay_api_key = '355db28ab7msh93f4cc83a76dbbcp154e0cjsn5279bcdc45dc'
-shopify_api_key = 'YOUR_SHOPIFY_API_KEY'
-alibaba_api_key = 'YOUR_ALIBABA_API_KEY'
+# amazon_api_key = '355db28ab7msh93f4cc83a76dbbcp154e0cjsn5279bcdc45dc'
+# ebay_api_key = '355db28ab7msh93f4cc83a76dbbcp154e0cjsn5279bcdc45dc'
+# shopify_api_key = 'YOUR_SHOPIFY_API_KEY'
+# alibaba_api_key = 'YOUR_ALIBABA_API_KEY'
 
-headers = {
-    'Content-Type': 'application/json'
-}
+# headers = {
+#     'Content-Type': 'application/json',
+#     'X-RapidAPI-Host': 'amazon23.p.rapidapi.com'
+
+# }
 
 # Making the requests to each platform's API
-amazon_response = requests.get('https://amazon23.p.rapidapi.com/product-search', headers=headers, params={'Authorization': f'Bearer {amazon_api_key}'})
-ebay_response = requests.get('https://amazon23.p.rapidapi.com/product-search', headers=headers, params={'Authorization': f'Bearer {ebay_api_key}'})
-shopify_response = requests.get('https://shopify.com/api/products', headers=headers, params={'Authorization': f'Bearer {shopify_api_key}'})
-alibaba_response = requests.get('https://alibaba.com/api/products', headers=headers, params={'Authorization': f'Bearer {alibaba_api_key}'})
+# amazon_response = requests.get('https://amazon23.p.rapidapi.com/product-search', headers=headers, params={'Authorization': f'Bearer {amazon_api_key}'})
+# ebay_response = requests.get('https://amazon23.p.rapidapi.com/product-search', headers=headers, params={'Authorization': f'Bearer {ebay_api_key}'})
+# shopify_response = requests.get('https://shopify.com/api/products', headers=headers, params={'Authorization': f'Bearer {shopify_api_key}'})
+# alibaba_response = requests.get('https://alibaba.com/api/products', headers=headers, params={'Authorization': f'Bearer {alibaba_api_key}'})
 
 #  product information from each platform's JSON response
-def extract_product_info(response):
-    if response.status_code == 200:
-        products = response.json()['products']
-        for product in products:
-            print(f"Product Name: {product['name']}, Product Price: {product['price']}")
-    else:
-        print(f"Error: {response.status_code}")
+# def extract_product_info(response):
+#     if response.status_code == 200:
+#         products = response.json()['products']
+#         for product in products:
+#             print(f"Product Name: {product['name']}, Product Price: {product['price']}")
+#     else:
+#         print(f"Error: {response.status_code}")
 
 # Displaying the product information for each platform
-print("Amazon Products:")
-extract_product_info(amazon_response)
+# print("Amazon Products:")
+# extract_product_info(amazon_response)
 
-print("\nEbay Products:")
-extract_product_info(ebay_response)
+# print("\nEbay Products:")
+# extract_product_info(ebay_response)
 
-print("\nShopify Products:")
-extract_product_info(shopify_response)
+# print("\nShopify Products:")
+# extract_product_info(shopify_response)
 
-print("\nAlibaba Products:")
-extract_product_info(alibaba_response)
+# print("\nAlibaba Products:")
+# extract_product_info(alibaba_response)
+
+import requests
+
+url = "https://amazon23.p.rapidapi.com/product-search"
+
+querystring = {"query":"xbox","country":"US"}
+
+headers = {
+	"X-RapidAPI-Key": "355db28ab7msh93f4cc83a76dbbcp154e0cjsn5279bcdc45dc",
+	"X-RapidAPI-Host": "amazon23.p.rapidapi.com"
+}
+
+response = requests.get(url, headers=headers, params=querystring)
+
+print(response.json())
 
 
 
