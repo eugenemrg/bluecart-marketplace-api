@@ -17,16 +17,16 @@ class User(db.Model, SerializerMixin):
 
     search_history = db.relationship('SearchHistory', backref='user')
 
-    @validates('username')
-    def validate_username(self, key,value):
-         if len(value) < 3:
-            raise ValueError('Username must be at least  3 characters long.')
+    # @validates('username')
+    # def validate_username(self, key,value):
+    #      if len(value) < 3:
+    #         raise ValueError('Username must be at least  3 characters long.')
 
     
-    @validates('email')
-    def validate_email(self, key, value):
-        if not value.endswith('@gmail.com'):
-             raise ValueError('Email must end with @gmail.com.')
+    # @validates('email')
+    # def validate_email(self, key, value):
+    #     if not value.endswith('@gmail.com'):
+    #          raise ValueError('Email must end with @gmail.com.')
 
     @hybrid_property
     def password_hash(self):
