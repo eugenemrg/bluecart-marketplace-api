@@ -12,6 +12,7 @@ flask-bcrypt = "*"
 flask-migrate = "*"
 sqlalchemy-serializer = "*"
 pytest = "*"
+requests = "*"
 
 [dev-packages]
 
