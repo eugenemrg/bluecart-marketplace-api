@@ -1,8 +1,10 @@
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy_serializer import SerializerMixin
 
-from config import db, bcrypt
+from projectapp.config import db, bcrypt
 from sqlalchemy.orm import validates
+
+
 
 
 class User(db.Model, SerializerMixin):
@@ -46,18 +48,9 @@ class SearchHistory(db.Model, SerializerMixin):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     name = db.Column(db.String)
     search_date = db.Column(db.DateTime)
-    
 
+    # @validates('name')
+    # def validate_name(self, value):
+    #     if len(value) < 3:
+    #         raise ValueError('Search history name must be at least 3 characters long.')
 
-    @validates('name')
-    def validate_name(self, value):
-        if len(value) < 3:
-            raise ValueError('Search history name must be at least 3 characters long.')
-
-
-"Authentication"
-"Routes"
-" session"
-"Documentation"
-"Request handling"
-"shipping cost"
