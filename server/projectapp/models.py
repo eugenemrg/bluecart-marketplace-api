@@ -49,8 +49,8 @@ class SearchHistory(db.Model, SerializerMixin):
     name = db.Column(db.String)
     search_date = db.Column(db.DateTime)
 
-    @validates('name')
-    def validate_name(self, value):
-        if len(value) < 3:
-            raise ValueError('Search history name must be at least 3 characters long.')
+    # @validates('name')
+    # def validate_name(self, value):
+    #     if len(value) < 3:
+    #         raise ValueError('Search history name must be at least 3 characters long.')
 
