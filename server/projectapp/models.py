@@ -14,6 +14,7 @@ class User(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String, unique = True, nullable=False)
     email = db.Column(db.String, unique=True, nullable=False)
+    _password_hash = db.Column(db.String)
 
     search_history = db.relationship('SearchHistory', backref='user')
 
