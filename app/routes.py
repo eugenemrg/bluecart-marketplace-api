@@ -1,109 +1,14 @@
 
-#from flask import make_response, jsonify, request,Flask
-#from projectapp.config import app
-#from typing import Dict, List
-#from projectapp.models import SearchHistory, User, db
-#0from flask_restx import Api, Resource
-#from flask_httpauth import HTTPBasicAuth
-#from flask_restful import Resource, reqparse
-#import datetime 
-#app = Flask(__name__)
-#api = Api(app)
-
-
-
-
-# class GetUsers(Resource):
-#     def get(self):
-#         users = [user.to_dict() for user in User.query.all()]
-#         resp = make_response(
-#             jsonify(users),
-#             200,
-#         )       
-#         return resp
-# api.add_resource(GetUsers, '/users')
-
-# class GetDescription(Resource):
-#     def get(self):
-#         with open('db.json', 'r') as json_file:
-#             data = json.load(json_file)
-        
-#         offers = []
-
-#         for offer_data in data["data"]:
-#             price = offer_data["offer"]["price"]
-#             description = offer_data['product_description']
-#             rating = offer_data['product_rating']
-#             product_image = offer_data['product_photos']
-#             title = offer_data['product_title']
-#             link = offer_data['offer']['offer_page_url']
-#             offers.append({'price': price, 'description': description, 'rating': rating, 'images': product_image, 'name': title, 'links': link})
-
-#         return jsonify({'offers': offers})
-
-# api.add_resource(GetDescription, '/products')
-
-    
-
-
-
-# from flask import make_response, jsonify, request
-# from projectapp.config import app
-# from projectapp.models import User
-# from flask_restful import Resource, Api
-# # import requests
-# import json
-# # import time
-# app = Flask(__name__)
-# api = Api(app)
-# auth = HTTPBasicAuth()
-
-
-
-
-
-# class GetUsers(Resource):
-#     def get(self):
-#         users = [user.to_dict() for user in User.query.all()]
-#         resp = make_response(
-#             jsonify(users),
-#             200,
-#         )       
-#         return resp
-# api.add_resource(GetUsers, '/users')
-
-# class GetDescription(Resource):
-#     def get(self):
-#         with open('db.json', 'r') as json_file:
-#             data = json.load(json_file)
-        
-#         offers = []
-
-#         for offer_data in data["data"]:
-#             price = offer_data["offer"]["price"]
-#             description = offer_data['product_description']
-#             rating = offer_data['product_rating']
-#             product_image = offer_data['product_photos']
-#             title = offer_data['product_title']
-#             link = offer_data['offer']['offer_page_url']
-#             offers.append({'price': price, 'description': description, 'rating': rating, 'images': product_image, 'name': title, 'links': link})
-
-#         return jsonify({'offers': offers})
-
-# api.add_resource(GetDescription, '/products')
 from flask_restx import Resource, Namespace,reqparse
-from projectapp.models import SearchHistory, User, db
-from .api_models import User_model
+from .api_models import user_profile_model, user_history_model
+from .models import SearchHistory, User
+from .extensions import db,api
+import requests
 import datetime
 
-
-
-
-
-
-ns = Namespace('api')
-
-
+profile_ns = Namespace('profile', description='Create, update or delete user profile')
+login_ns = Namespace('login', description='Handle user log in')
+history_ns = Namespace('history', description='Get, update or delete user history')
 
 
 def get_user_data(username):
@@ -117,8 +22,9 @@ def get_user_data(username):
 # namespace for profiles (create, update, delete)
 #profile_ns = api.namespace('profiles', description='User profile related operations')
 
-# namespace for history
-#history_ns = api.namespace('history', description='User browsing history related operations')
+#namespace for history
+#
+# history_ns = api.namespace('history', description='User browsing history related operations')
 
 # namespace for log in
 #login_ns = api.namespace('login', description='User login related operations')
@@ -128,10 +34,10 @@ def get_user_data(username):
 
 
 
-@ns.route('/')
+@profile_ns.route('/')
 class Profile(Resource):
-    @ns.marshal_list_with(User_model)
-    def post (self, id):
+     @profile_ns.marshal_list_with(user_profile_model)
+     def post (self, id):
         """"
          Create a new user profile
         """ 
@@ -154,14 +60,13 @@ class Profile(Resource):
         return {'message': 'User profile created successfully.'}, 200
 
 
-@ns.route('/<int:id>')
+@login_ns.route('/<int:id>')
 class ProfileUpdate(Resource):
-    @ns.marshal_list_with(User_model)
     def put(self, id):
         """
         Update user profile
         """
-        data = request.get_json()
+        data = requests.get_json()
         profile = User.query.get(id)
 
         if profile is None:
@@ -191,9 +96,9 @@ class ProfileUpdate(Resource):
 
 api.add_resource(ProfileUpdate, '/profile/<int:id>')
 
-@ns.route('/')
+@login_ns.route('/')
 class Login(Resource):
-    @ns.marshal_list_with(User_model)
+   # @history_ns.marshal_list_with(user_history_model)
     def post(self, id):
         """
         Login user, send back JWT token
@@ -202,7 +107,7 @@ class Login(Resource):
         if not user:
             return {"message": "User not found"}, 404
 
-        password = request.json.get('password')
+        password = requests.json.get('password')
         if not user.check_password(password):
             return {"message": "Invalid password"}, 400
 
@@ -211,21 +116,23 @@ class Login(Resource):
 
         return {"token": token, "expiration": exp}, 200
     
-@ns.route('/')
+
+
+@history_ns.route('/')
 class HistoryList(Resource):
-    @ns.marshal_list_with(SearchHistory_model)
+    @history_ns.marshal_list_with(user_history_model)
     def get(self):
         """
         Get entire user search history
         """
         # get the user_id from the token
-        user_id = User.get_user_id_from_token(request)
+        user_id = User.get_user_id_from_token(requests)
 
         # retrieve the user's search history from the database
-        history = User.get_history(user_id)
+        history = SearchHistory.query.filter_by(user_id = user_id)
 
         # return the search history as a response
-        return jsonify(history), 200
+        return history, 200
     
         
 
@@ -234,21 +141,21 @@ class HistoryList(Resource):
         Add search query to history
         """
         # get the user_id from the token
-        user_id = User.get_user_id_from_token(request)
+       # user_id = User.get_user_id_from_token(requests) 
 
         # get the search query from the request data
-        query = request.json.get('query')
-
+        query = history_ns.payload
+        print (query)
         # add the search query to the user's search history in the database
-        User.add_to_history(user_id, query)
+       # User.add_to_history(user_id, query)
 
         # return a success message as a response
         return {"message": "Search query added to history"}, 201
        
 
-@ns.route('/<id>')
+@history_ns.route('/<id>')
 class History(Resource):
-    @ns.marshal_list_with(User_model)
+    @history_ns.marshal_list_with(user_history_model)
     def delete(self, id):
         """
         Delete search item from history by id

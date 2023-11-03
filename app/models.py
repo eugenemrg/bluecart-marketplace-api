@@ -1,15 +1,10 @@
 from sqlalchemy.ext.hybrid import hybrid_property
-from sqlalchemy_serializer import SerializerMixin
-from projectapp.extensions import db, bcrypt
 from sqlalchemy.orm import validates
+from .extensions import db, bcrypt
 
-
-
-
-class User(db.Model, SerializerMixin):
+class User(db.Model):
     __tablename__ = 'users'
-
-    serialize_rules = ('-reviews.user', )
+    
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String, unique = True, nullable=False)
     email = db.Column(db.String, unique=True, nullable=False)
@@ -21,13 +16,7 @@ class User(db.Model, SerializerMixin):
         if  not name:
             raise ValueError('No name provided')
         return name
-
     
-    # @validates('email')
-    # def validate_email(self, key, email):
-    #     if not email:
-    #          raise ValueError('Email must end with @gmail.com.')
-
     @hybrid_property
     def password_hash(self):
         return self.password
@@ -41,13 +30,10 @@ class User(db.Model, SerializerMixin):
         return bcrypt.check_password_hash(self.password, password.encode('utf-8'))
 
 
-class SearchHistory(db.Model, SerializerMixin):
+class SearchHistory(db.Model):
     __tablename__ = 'search_history'
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     name = db.Column(db.String)
     search_date = db.Column(db.DateTime)
-
- 
-
