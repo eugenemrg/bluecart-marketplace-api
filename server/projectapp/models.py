@@ -1,7 +1,6 @@
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy_serializer import SerializerMixin
-
-from projectapp.config import db, bcrypt
+from projectapp.extensions import db, bcrypt
 from sqlalchemy.orm import validates
 
 
