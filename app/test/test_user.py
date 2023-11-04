@@ -1,6 +1,6 @@
 import pytest
-from projectapp.models import User
-from projectapp.config import db, app
+from app.models import User
+from app.extensions import db, app
 # from faker import Faker
 
 
