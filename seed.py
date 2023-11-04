@@ -1,3 +1,4 @@
+from random import randint
 from app import create_app
 from app.extensions import db
 from app.models import User
@@ -58,7 +59,9 @@ with app.app_context():
     for i in range(20):
         print("**all good**")
         user = User(username=names[i],
-                    email=emails[i])
+                    email=emails[i],
+                    password_hash=f'password{randint(0,9)}'
+                    )
         print("**done**")
         users.append(user)
     db.session.add_all(users)
