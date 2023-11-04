@@ -1,6 +1,6 @@
 from flask import Flask
 from .extensions import api, db, migrate, bcrypt, jwt
-from .routes import profile_ns, login_ns, history_ns
+from .routes import profile_ns, login_ns, search_ns, history_ns
 
 def create_app():
     app = Flask(__name__)
@@ -16,6 +16,7 @@ def create_app():
     
     api.add_namespace(profile_ns)
     api.add_namespace(login_ns)
+    api.add_namespace(search_ns)
     api.add_namespace(history_ns)
     
     return app
