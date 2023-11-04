@@ -3,6 +3,7 @@ from flask_restx import fields
 from .extensions import api
 
 user_history_model = api.model("UserHistory", {
+    "id": fields.Integer,
     "name": fields.String,
     "search_date": fields.DateTime
 })
