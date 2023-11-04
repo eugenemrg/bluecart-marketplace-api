@@ -1,4 +1,5 @@
 
+from flask import request
 from flask_restx import Resource, Namespace
 from .api_models import user_profile_model, user_history_model, user_updated_profile_model
 from .models import SearchHistory, User
@@ -7,6 +8,7 @@ from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_requir
 
 profile_ns = Namespace('profile', description='Create, update or delete user profile')
 login_ns = Namespace('login', description='Handle user log in')
+search_ns = Namespace('search', description='Search for items and products')
 history_ns = Namespace('history', description='Get, update or delete user history')
 
 @profile_ns.route('')
@@ -124,3 +126,28 @@ class History(Resource):
         db.session.delete(search_item)
         db.session.commit()
         return {}, 204
+
+@search_ns.route('')
+class Search(Resource):
+    
+    def get(self):
+        
+        search_query = history_ns.payload['query']
+        
+        # Save search query to history if user is authenticated
+        if 'Authorization' in request.headers:
+            
+            user_details = get_jwt_identity()
+            user = User.query.filter_by(email = user_details["email"]).first()
+            
+            new_search_query = SearchHistory(
+                user_id = user.id,
+                name = history_ns.payload['query']
+            )
+            
+            db.session.add(new_search_query)
+            db.session.commit()
+        
+        # TODO: KEN - Handle products and item search below
+        pass
+                    
