@@ -31,6 +31,14 @@ req_login_model = api.model("Log In Request", {
     "password": fields.String
 })
 
+req_search_model = api.model("Search Request", {
+    "query": fields.String
+})
+
+req_history_model = api.model("User History Request", {
+    "name": fields.String
+})
+
 # Expected response formats
 res_login_model = api.model("Log In Response", {
     "access_token": fields.String
