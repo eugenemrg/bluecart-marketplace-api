@@ -1,8 +1,9 @@
 from flask_restx import Resource, Namespace
 from .api_models import user_profile_model, user_history_model, user_updated_profile_model, req_signup_model, req_login_model, res_login_model, req_search_model, req_history_model
 from .models import SearchHistory, User
-from .extensions import db
+from .extensions import db, api
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required, get_jwt
+import requests
 
 profile_ns = Namespace('profile', description='Create, update or delete user profile')
 login_ns = Namespace('login', description='Handle user log in')
@@ -147,7 +148,7 @@ class Search(Resource):
     
     @jwt_required(optional=True)
     @search_ns.expect(req_search_model)
-    def get(self):
+    def post(self):
         """
         Search for a products or items requested in the query
         """
@@ -164,7 +165,156 @@ class Search(Resource):
             )
             db.session.add(new_search_query)
             db.session.commit()
-        
+            
         # TODO: KEN - Handle products and item search below
         pass
-                    
+        products = get_all(search_query)
+        return products, 200
+
+
+# class CallProducts(Resource):
+#     def get(self, query):
+#         products = get_all(query)
+#         return jsonify({'products': products})
+
+# api.add_resource(CallProducts, "/products/<query>")
+
+
+def get_aliexpress(search_query):
+        url = f"https://axesso-walmart-data-service.p.rapidapi.com/wlm/walmart-search-by-keyword?keyword={search_query}&page=1&sortBy=best_match"
+        headers = {
+            "X-RapidAPI-Key": "0c13e6b05emshc2e7b58cc93b154p10e704jsnadbeb58f7621",
+        }
+        r = requests.get(url, headers=headers)
+        
+        # if r.status_code != 200:
+        #       return []
+
+        data = r.json()
+        results = []
+        # print(data['item']['props']['pageProps']['initialData']['searchResult']['itemStacks'][0]['items'])
+
+        for result_data in data['item']['props']['pageProps']['initialData']['searchResult']['itemStacks'][0]['items']:
+
+            description = result_data.get('shortDescription', None)
+            # price = result_data['priceInfo']['linePrice', None]
+            # rating = result_data['rating']['averageRating']
+            product_image = result_data.get('image', None)
+            title = result_data.get('name', None)
+            review = result_data.get('numberOfReviews',None)
+
+            # results.append({'description': description,'price': price,'rating': rating,'image': product_image,'name': title,'review': review})
+            results.append({'description': description, 'image': product_image, "title": title, 'review': review,})
+        return results
+def get_amazon(search_query):
+        url = f"https://amazon-price1.p.rapidapi.com/search?keywords={search_query}&marketplace=ES"
+        headers = {
+            "X-RapidAPI-Key": "187882b51bmshe44dfc8172e8e0ep160f0djsn9e44e22eb233",
+        }
+        r = requests.get(url, headers=headers)
+        data = r.json()
+        results = []
+
+        for result_data in data:
+            price = result_data["listPrice"]
+            rating = result_data['rating']
+            product_image = result_data['imageUrl']
+            title = result_data['title']
+            link = result_data['detailPageURL']
+            review = result_data['totalReviews']
+            results.append({'price': price, 'rating': rating, 'image': product_image, 'name': title, 'review': review, 'link':link})
+
+        return results
+def get_ebay(search_query):
+        url1 = f"https://ebay-search-result.p.rapidapi.com/search/{search_query}"
+        headers1 = {
+            "X-RapidAPI-Key": "355db28ab7msh93f4cc83a76dbbcp154e0cjsn5279bcdc45dc",
+        }
+        r = requests.get(url1, headers=headers1)
+        data = r.json()
+        offers = []
+
+        for result_data in data["results"]:
+            price = result_data["price"]
+            rating = result_data['rating']
+            product_image = result_data['image']
+            title = result_data['title']
+            link = result_data['url']
+            offers.append({'price': price, 'rating': rating, 'image': product_image, 'name': title, 'links': link})
+        return offers
+def get_real_time(search_query):
+         
+        url = f"https://real-time-product-search.p.rapidapi.com/search?q={search_query}&country=us&language=en"
+        headers = {
+            # "X-RapidAPI-Key": "355db28ab7msh93f4cc83a76dbbcp154e0cjsn5279bcdc45dc",
+            "X-RapidAPI-Key": "0c13e6b05emshc2e7b58cc93b154p10e704jsnadbeb58f7621",
+
+
+
+
+        }
+        r = requests.get(url, headers=headers)
+        data = r.json()
+        # if r.status_code != 200:
+        #       return []
+        offers = []
+
+        for offer_data in data["data"]:
+            price = offer_data["offer"]["price"]
+            description = offer_data['product_description']
+            rating = offer_data['product_rating']
+            product_image = offer_data['product_photos'][0]
+            title = offer_data['product_title']
+            link = offer_data['offer']['offer_page_url']
+            offers.append({'price': price, 'description': description, 'rating': rating, 'images': product_image, 'name': title, 'links': link})
+        return offers
+
+
+def get_all(search_query):
+        amazon_results = get_amazon(search_query=search_query)
+        aliexpress_results = get_aliexpress(search_query=search_query)
+        ebay_results = get_ebay(search_query=search_query)
+        real_time_results = get_real_time(search_query=search_query)
+        results = amazon_results  + ebay_results + real_time_results + aliexpress_results
+        id = 1
+        for product in results:
+              product.update({"id": id})
+            #   rating = scrape()
+            #   product.update({"rating":rating})
+              id += 1
+
+        MB = marginalBenefit(results)
+        return results, MB
+
+def marginalBenefit(data):
+    ratings = {}
+    for i in data:
+        try:
+            # rating = float(i["rating"])
+            # ratings[i["product_id"]] = rating
+            ratings[i["product_id"]] = float(i["price"])
+        except (KeyError, ValueError):
+            print("Not alive")
+
+    if not ratings:
+        return 0
+    else:
+        average_rating = sum(ratings.values()) / len(ratings)
+    
+    sorted_products = dict(sorted(ratings.items(), key=lambda item: item[1], reverse=True))
+    increase_product_rating = list(sorted_products.values())[-1]
+    MB = increase_product_rating - average_rating
+
+    return MB
+
+# def costBenefit(data):
+#     prices = []
+#     for i in data:
+#         prices.append(i['price'][0])
+    
+#     average_price = sum(prices) / len(prices)
+
+#     increase_product_price = data[-1]['price']
+#     CB = increase_product_price - average_price
+    
+#     return CB
