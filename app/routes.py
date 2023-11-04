@@ -1,5 +1,5 @@
 from flask_restx import Resource, Namespace
-from .api_models import user_profile_model, user_history_model, user_updated_profile_model
+from .api_models import user_profile_model, user_history_model, user_updated_profile_model, req_signup_model, req_login_model, res_login_model, req_search_model, req_history_model
 from .models import SearchHistory, User
 from .extensions import db
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required, get_jwt
@@ -11,7 +11,11 @@ history_ns = Namespace('history', description='Get, update or delete user histor
 
 @profile_ns.route('')
 class Profile(Resource):
+    @profile_ns.expect(req_signup_model)
     def post(self):
+        """
+        Create a user account
+        """
         data = profile_ns.payload
         
         username = data["username"]
@@ -29,6 +33,7 @@ class Profile(Resource):
             return {'message': 'User already exists.'}, 422
     
     @jwt_required()
+    @profile_ns.expect(user_updated_profile_model)
     @profile_ns.marshal_with(user_updated_profile_model)
     def put(self):
         """
@@ -67,7 +72,12 @@ class Profile(Resource):
     
 @login_ns.route('')
 class LogIn(Resource):
+    
+    @login_ns.expect(req_login_model)
     def post(self):
+        """
+        Log In user and return a JWT token
+        """
         data = login_ns.payload
         
         email = data["email"]
@@ -87,13 +97,20 @@ class History(Resource):
     @jwt_required()
     @history_ns.marshal_list_with(user_history_model)
     def get(self):
+        """
+        Get search history for a user
+        """
         user_details = get_jwt_identity()
         user = User.query.filter_by(email = user_details["email"]).first()
         return SearchHistory.query.filter_by(user_id = user.id).all()
     
     @jwt_required()
+    @history_ns.expect(req_history_model)
     @history_ns.marshal_with(user_history_model)
     def post(self):
+        """
+        Add search query to a user search history
+        """
         user_details = get_jwt_identity()
         user = User.query.filter_by(email = user_details["email"]).first()
         
@@ -129,8 +146,11 @@ class History(Resource):
 class Search(Resource):
     
     @jwt_required(optional=True)
+    @search_ns.expect(req_search_model)
     def get(self):
-        
+        """
+        Search for a products or items requested in the query
+        """
         search_query = history_ns.payload['query']
         
         # Save search query to history if user is authenticated
