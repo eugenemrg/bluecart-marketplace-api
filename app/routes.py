@@ -109,7 +109,7 @@ class History(Resource):
     @history_ns.marshal_with(user_history_model)
     def post(self):
         """
-        Add search query to a user search history
+        Add search query to the search history database
         """
         user_details = get_jwt_identity()
         user = User.query.filter_by(email = user_details["email"]).first()
