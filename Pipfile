@@ -12,6 +12,7 @@ flask-jwt-extended = "*"
 pytest = "*"
 requests = "*"
 gunicorn = "*"
+flask-cors = "*"
 
 [dev-packages]
 
