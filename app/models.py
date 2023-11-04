@@ -1,6 +1,7 @@
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import validates
 from .extensions import db, bcrypt
+from datetime import datetime
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -37,4 +38,4 @@ class SearchHistory(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     name = db.Column(db.String)
-    search_date = db.Column(db.DateTime)
+    search_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
