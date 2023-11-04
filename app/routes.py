@@ -1,5 +1,3 @@
-
-from flask import request
 from flask_restx import Resource, Namespace
 from .api_models import user_profile_model, user_history_model, user_updated_profile_model
 from .models import SearchHistory, User
@@ -130,13 +128,13 @@ class History(Resource):
 @search_ns.route('')
 class Search(Resource):
     
+    @jwt_required(optional=True)
     def get(self):
         
         search_query = history_ns.payload['query']
         
         # Save search query to history if user is authenticated
-        if 'Authorization' in request.headers:
-            
+        if get_jwt_identity():
             user_details = get_jwt_identity()
             user = User.query.filter_by(email = user_details["email"]).first()
             
@@ -144,7 +142,6 @@ class Search(Resource):
                 user_id = user.id,
                 name = history_ns.payload['query']
             )
-            
             db.session.add(new_search_query)
             db.session.commit()
         
