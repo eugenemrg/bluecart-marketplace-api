@@ -8,6 +8,11 @@ user_history_model = api.model("UserHistory", {
     "search_date": fields.DateTime
 })
 
+user_updated_profile_model = api.model("UpdatedUserProfile", {
+    "username": fields.String,
+    "email": fields.String
+})
+
 user_profile_model = api.model("UserProfile", {
     "username": fields.String,
     "email": fields.String,
