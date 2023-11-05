@@ -168,16 +168,8 @@ class Search(Resource):
             
         # TODO: KEN - Handle products and item search below
         pass
-        products = get_all(search_query)
+        products = get_all(search_query=search_query)
         return products, 200
-
-
-# class CallProducts(Resource):
-#     def get(self, query):
-#         products = get_all(query)
-#         return jsonify({'products': products})
-
-# api.add_resource(CallProducts, "/products/<query>")
 
 
 def get_aliexpress(search_query):
