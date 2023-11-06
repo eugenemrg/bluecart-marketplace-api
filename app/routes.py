@@ -179,8 +179,8 @@ def get_aliexpress(search_query):
         }
         r = requests.get(url, headers=headers)
         
-        # if r.status_code != 200:
-        #       return []
+        if r.status_code != 200:
+              return []
 
         data = r.json()
         results = []
@@ -239,11 +239,7 @@ def get_real_time(search_query):
         url = f"https://real-time-product-search.p.rapidapi.com/search?q={search_query}&country=us&language=en"
         headers = {
             # "X-RapidAPI-Key": "355db28ab7msh93f4cc83a76dbbcp154e0cjsn5279bcdc45dc",
-            "X-RapidAPI-Key": "0c13e6b05emshc2e7b58cc93b154p10e704jsnadbeb58f7621",
-
-
-
-
+            "X-RapidAPI-Key": "0c13e6b05emshc2e7b58cc93b154p10e704jsnadbeb58f7621"
         }
         r = requests.get(url, headers=headers)
         data = r.json()
@@ -261,7 +257,7 @@ def get_real_time(search_query):
             offers.append({'price': price, 'description': description, 'rating': rating, 'images': product_image, 'name': title, 'links': link})
         return offers
 
-
+        
 def get_all(search_query):
         amazon_results = get_amazon(search_query=search_query)
         aliexpress_results = get_aliexpress(search_query=search_query)
@@ -279,19 +275,15 @@ def get_all(search_query):
         return results, MB
 
 def marginalBenefit(data):
-    ratings = {}
     for i in data:
         try:
-            # rating = float(i["rating"])
-            # ratings[i["product_id"]] = rating
-            ratings[i["product_id"]] = float(i["price"])
+            ratings = i['rating']
         except (KeyError, ValueError):
             print("Not alive")
-
     if not ratings:
         return 0
     else:
-        average_rating = sum(ratings.values()) / len(ratings)
+        average_rating = sum(ratings()) / len(ratings)
     
     sorted_products = dict(sorted(ratings.items(), key=lambda item: item[1], reverse=True))
     increase_product_rating = list(sorted_products.values())[-1]
@@ -299,14 +291,25 @@ def marginalBenefit(data):
 
     return MB
 
-# def costBenefit(data):
-#     prices = []
-#     for i in data:
-#         prices.append(i['price'][0])
-    
-#     average_price = sum(prices) / len(prices)
 
-#     increase_product_price = data[-1]['price']
-#     CB = increase_product_price - average_price
+def costBenefit(data):
+    price = {}
+    for i in data:
+        try:   
+              price[i["id"]] = float(i["price"])
+        except(KeyError, ValueError):
+             print("not with me")
+        if not price:
+             return 0
+        else:
+             pass
+             
+
+    #     prices.append(i['price'][0])
     
-#     return CB
+    # average_price = sum(prices) / len(prices)
+
+    # increase_product_price = data[-1]['price']
+    # CB = increase_product_price - average_price
+    
+    return CB
