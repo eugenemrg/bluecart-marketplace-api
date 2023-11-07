@@ -1,3 +1,4 @@
+from exceptiongroup import catch
 from flask_restx import Resource, Namespace
 from .api_models import user_profile_model, user_history_model, user_updated_profile_model, req_signup_model, req_login_model, res_login_model, req_search_model, req_history_model
 from .models import SearchHistory, User
@@ -194,18 +195,26 @@ def get_aliexpress(search_query):
         results = []
         # print(data['item']['props']['pageProps']['initialData']['searchResult']['itemStacks'][0]['items'])
 
-        for result_data in data['item']['props']['pageProps']['initialData']['searchResult']['itemStacks'][0]['items']:
+        try:
+            for result_data in data['item']['props']['pageProps']['initialData']['searchResult']['itemStacks'][0]['items']:
+                description = result_data.get('shortDescription', None)
+                # price = result_data['priceInfo']['linePrice', None]
+                # rating = result_data['rating']['averageRating']
+                product_image = result_data.get('image', None)
+                title = result_data.get('name', None)
+                review = result_data.get('numberOfReviews',None)
 
-            description = result_data.get('shortDescription', None)
-            # price = result_data['priceInfo']['linePrice', None]
-            # rating = result_data['rating']['averageRating']
-            product_image = result_data.get('image', None)
-            title = result_data.get('name', None)
-            review = result_data.get('numberOfReviews',None)
-
-            # results.append({'description': description,'price': price,'rating': rating,'image': product_image,'name': title,'review': review})
-            results.append({'description': description, 'image': product_image, "title": title, 'review': review,})
+                # results.append({'description': description,'price': price,'rating': rating,'image': product_image,'name': title,'review': review})
+                results.append({'description': description, 'image': product_image, "title": title, 'review': review,})
+        except KeyError:
+            if r.status_code == 429 or int(r.status_code) == 429:
+                print(data)
+                print('(get_aliexpress) - Rate limit likely exceeded, results not included')
+            else:
+                print("(get_aliexpress) - Encountered an error while processing your query")
+            
         return results
+    
 def get_amazon(search_query):
         url = f"https://amazon-price1.p.rapidapi.com/search?keywords={search_query}&marketplace=ES"
         headers = {
@@ -215,14 +224,18 @@ def get_amazon(search_query):
         data = r.json()
         results = []
 
-        for result_data in data:
-            price = result_data["listPrice"]
-            rating = result_data['rating']
-            product_image = result_data['imageUrl']
-            title = result_data['title']
-            link = result_data['detailPageURL']
-            review = result_data['totalReviews']
-            results.append({'price': price, 'rating': rating, 'image': product_image, 'name': title, 'review': review, 'link':link})
+        try:
+            for result_data in data:
+                price = result_data["listPrice"]
+                rating = result_data['rating']
+                product_image = result_data['imageUrl']
+                title = result_data['title']
+                link = result_data['detailPageURL']
+                review = result_data['totalReviews']
+                results.append({'price': price, 'rating': rating, 'image': product_image, 'name': title, 'review': review, 'link':link})
+        except Exception as e:
+            print(e)
+            print('(get_amazon) experienced an error')
 
         return results
 def get_ebay(search_query):
@@ -234,13 +247,18 @@ def get_ebay(search_query):
         data = r.json()
         offers = []
 
-        for result_data in data["results"]:
-            price = result_data["price"]
-            rating = result_data['rating']
-            product_image = result_data['image']
-            title = result_data['title']
-            link = result_data['url']
-            offers.append({'price': price, 'rating': rating, 'image': product_image, 'name': title, 'links': link})
+        try:
+            for result_data in data["results"]:
+                price = result_data["price"]
+                rating = result_data['rating']
+                product_image = result_data['image']
+                title = result_data['title']
+                link = result_data['url']
+                offers.append({'price': price, 'rating': rating, 'image': product_image, 'name': title, 'links': link})
+        except Exception as e:
+            print(e)
+            print("(get_ebay) experienced an error")
+        
         return offers
 def get_real_time(search_query):
          
@@ -259,14 +277,19 @@ def get_real_time(search_query):
         #       return []
         offers = []
 
-        for offer_data in data["data"]:
-            price = offer_data["offer"]["price"]
-            description = offer_data['product_description']
-            rating = offer_data['product_rating']
-            product_image = offer_data['product_photos'][0]
-            title = offer_data['product_title']
-            link = offer_data['offer']['offer_page_url']
-            offers.append({'price': price, 'description': description, 'rating': rating, 'images': product_image, 'name': title, 'links': link})
+        try:
+            for offer_data in data["data"]:
+                price = offer_data["offer"]["price"]
+                description = offer_data['product_description']
+                rating = offer_data['product_rating']
+                product_image = offer_data['product_photos'][0]
+                title = offer_data['product_title']
+                link = offer_data['offer']['offer_page_url']
+                offers.append({'price': price, 'description': description, 'rating': rating, 'images': product_image, 'name': title, 'links': link})
+        except Exception as e:
+            print(e)
+            print("(get_real_time) experienced an error")
+        
         return offers
 
 
