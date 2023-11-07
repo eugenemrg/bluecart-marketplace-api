@@ -271,45 +271,72 @@ def get_all(search_query):
             #   product.update({"rating":rating})
               id += 1
 
-        MB = marginalBenefit(results)
-        return results, MB
+        result = availableProducts(results)
+        return results, result
 
-def marginalBenefit(data):
-    for i in data:
-        try:
-            ratings = i['rating']
-        except (KeyError, ValueError):
-            print("Not alive")
-    if not ratings:
-        return 0
-    else:
-        average_rating = sum(ratings()) / len(ratings)
+
+def availableProducts(products):
+      results = []
+      for i in products:
+            if all(data in i for data in ['rating', 'price', 'description', 'title', 'review', 'link', 'image']):
+                if i["price"] == "":
+                      del i['price']
+                if i['rating'] == '' or None:
+                      del i['rating']
+                # if i['price', 'rating', 'title', 'description', 'image', 'link','review'] == "" or None:
+                #       del i['price', 'rating', 'title', 'description', 'image', 'link','review']        
+                try:
+                      rating = i['rating']
+                      description = i['description']
+                      title = i['title']
+                      review = i['review']
+                      link = i['link']
+                      image = i['image']
+                      price = i['price']
+                      results.append({'rating': rating, 'price': price, 'description': description, 'title': title, 'image': image, 'link': link, 'review': review})
+                except ValueError:  
+                    print("Results is not a Available")
+      if not results:
+                return False
+      else:
+            return results
+
+# def marginalBenefit(data):
+#     for i in data:
+#         try:
+#             ratings = i['rating']
+#         except (KeyError, ValueError):
+#             print("Not alive")
+#     if not ratings:
+#         return 0
+#     else:
+#         average_rating = sum(ratings()) / len(ratings)
     
-    sorted_products = dict(sorted(ratings.items(), key=lambda item: item[1], reverse=True))
-    increase_product_rating = list(sorted_products.values())[-1]
-    MB = increase_product_rating - average_rating
+#     sorted_products = dict(sorted(ratings.items(), key=lambda item: item[1], reverse=True))
+#     increase_product_rating = list(sorted_products.values())[-1]
+#     MB = increase_product_rating - average_rating
 
-    return MB
+#     return MB
 
 
-def costBenefit(data):
-    price = {}
-    for i in data:
-        try:   
-              price[i["id"]] = float(i["price"])
-        except(KeyError, ValueError):
-             print("not with me")
-        if not price:
-             return 0
-        else:
-             pass
+# def costBenefit(data):
+#     price = {}
+#     for i in data:
+#         try:   
+#               price[i["id"]] = float(i["price"])
+#         except(KeyError, ValueError):
+#              print("not with me")
+#         if not price:
+#              return 0
+#         else:
+#              pass
              
 
-    #     prices.append(i['price'][0])
+#     #     prices.append(i['price'][0])
     
-    # average_price = sum(prices) / len(prices)
+#     # average_price = sum(prices) / len(prices)
 
-    # increase_product_price = data[-1]['price']
-    # CB = increase_product_price - average_price
+#     # increase_product_price = data[-1]['price']
+#     # CB = increase_product_price - average_price
     
-    return CB
+#     return CB
