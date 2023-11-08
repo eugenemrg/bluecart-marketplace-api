@@ -305,29 +305,29 @@ def get_all(search_query):
             #   product.update({"rating":rating})
               id += 1
 
-        MB = marginalBenefit(results)
-        return results, MB
+        # MB = marginalBenefit(results)
+        return results
 
-def marginalBenefit(data):
-    ratings = {}
-    for i in data:
-        try:
-            # rating = float(i["rating"])
-            # ratings[i["product_id"]] = rating
-            ratings[i["product_id"]] = float(i["price"])
-        except (KeyError, ValueError):
-            print("Not alive")
+# def marginalBenefit(data):
+#     ratings = {}
+#     for i in data:
+#         try:
+#             # rating = float(i["rating"])
+#             # ratings[i["product_id"]] = rating
+#             ratings[i["product_id"]] = float(i["price"])
+#         except (KeyError, ValueError):
+#             print("Not alive")
 
-    if not ratings:
-        return 0
-    else:
-        average_rating = sum(ratings.values()) / len(ratings)
+#     if not ratings:
+#         return 0
+#     else:
+#         average_rating = sum(ratings.values()) / len(ratings)
     
-    sorted_products = dict(sorted(ratings.items(), key=lambda item: item[1], reverse=True))
-    increase_product_rating = list(sorted_products.values())[-1]
-    MB = increase_product_rating - average_rating
+#     sorted_products = dict(sorted(ratings.items(), key=lambda item: item[1], reverse=True))
+#     increase_product_rating = list(sorted_products.values())[-1]
+#     MB = increase_product_rating - average_rating
 
-    return MB
+#     return MB
 
 # def costBenefit(data):
 #     prices = []
