@@ -218,7 +218,7 @@ def get_aliexpress(search_query):
 def get_amazon(search_query):
         url = f"https://amazon-price1.p.rapidapi.com/search?keywords={search_query}&marketplace=ES"
         headers = {
-            "X-RapidAPI-Key": "187882b51bmshe44dfc8172e8e0ep160f0djsn9e44e22eb233",
+            "X-RapidAPI-Key": "355db28ab7msh93f4cc83a76dbbcp154e0cjsn5279bcdc45dc",
         }
         r = requests.get(url, headers=headers)
         data = r.json()
