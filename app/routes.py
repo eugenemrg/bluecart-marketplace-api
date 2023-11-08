@@ -239,11 +239,11 @@ def get_amazon(search_query):
 
         return results
 def get_ebay(search_query):
-        url1 = f"https://ebay-search-result.p.rapidapi.com/search/{search_query}"
-        headers1 = {
+        url = f"https://ebay-search-result.p.rapidapi.com/search/{search_query}"
+        headers = {
             "X-RapidAPI-Key": "355db28ab7msh93f4cc83a76dbbcp154e0cjsn5279bcdc45dc",
         }
-        r = requests.get(url1, headers=headers1)
+        r = requests.get(url, headers=headers)
         data = r.json()
         offers = []
 
@@ -254,7 +254,7 @@ def get_ebay(search_query):
                 product_image = result_data['image']
                 title = result_data['title']
                 link = result_data['url']
-                offers.append({'price': price, 'rating': rating, 'image': product_image, 'name': title, 'links': link})
+                offers.append({'price': price, 'rating': rating, 'image': product_image, 'name': title, 'link': link})
         except Exception as e:
             print(e)
             print("(get_ebay) experienced an error")
@@ -284,7 +284,7 @@ def get_real_time(search_query):
                 product_image = offer_data['product_photos'][0]
                 title = offer_data['product_title']
                 link = offer_data['offer']['offer_page_url']
-                offers.append({'price': price, 'description': description, 'rating': rating, 'images': product_image, 'name': title, 'links': link})
+                offers.append({'price': price, 'description': description, 'rating': rating, 'images': product_image, 'name': title, 'link': link})
         except Exception as e:
             print(e)
             print("(get_real_time) experienced an error")
@@ -305,38 +305,37 @@ def get_all(search_query):
             #   product.update({"rating":rating})
               id += 1
 
-        MB = marginalBenefit(results)
-        return results, MB
+        result = sortProducts(results)
+        return result
 
-def marginalBenefit(data):
-    ratings = {}
-    for i in data:
-        try:
-            # rating = float(i["rating"])
-            # ratings[i["product_id"]] = rating
-            ratings[i["product_id"]] = float(i["price"])
-        except (KeyError, ValueError):
-            print("Not alive")
 
-    if not ratings:
-        return 0
-    else:
-        average_rating = sum(ratings.values()) / len(ratings)
-    
-    sorted_products = dict(sorted(ratings.items(), key=lambda item: item[1], reverse=True))
-    increase_product_rating = list(sorted_products.values())[-1]
-    MB = increase_product_rating - average_rating
+def availableProducts(products):
+      results = []
+      
+      for product in products:
+          if product["price"] == "" or product["price"] == None or product["price"].count("$") > 1:
+              continue
+          
+        #   if product["description"] == "" or product["description"] == None:
+        #       continue
+          
+          if product["rating"] == "" or product["rating"] == None:
+              continue
+          
+        #   if product["image"] == "" or product["image"] == None:
+        #       continue
+          
+        #   if product["title"] == "" or product["title"] == None:
+        #       continue
+          
+        #   if product["link"] == "" or product["link"] == None:
+        #       continue
+          
+          results.append(product)
+          
+      return results
 
-    return MB
-
-# def costBenefit(data):
-#     prices = []
-#     for i in data:
-#         prices.append(i['price'][0])
-    
-#     average_price = sum(prices) / len(prices)
-
-#     increase_product_price = data[-1]['price']
-#     CB = increase_product_price - average_price
-    
-#     return CB
+def sortProducts(products):
+        available_products = availableProducts(products)
+        sorted_products = sorted(available_products, key=lambda data: (data["price"].replace(',', '')), reverse=True)
+        return sorted_products
