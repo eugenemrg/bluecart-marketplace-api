@@ -46,7 +46,7 @@ class Profile(Resource):
         
         # Update account details for the user
         user.username = profile_ns.payload["username"]
-        user.password = profile_ns.payload["password"]
+        user.password_hash = profile_ns.payload["password"]
         db.session.commit()
         return user
     
