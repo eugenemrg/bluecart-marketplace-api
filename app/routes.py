@@ -284,7 +284,7 @@ def get_real_time(search_query):
                 product_image = offer_data['product_photos'][0]
                 title = offer_data['product_title']
                 link = offer_data['offer']['offer_page_url']
-                offers.append({'price': price, 'description': description, 'rating': rating, 'images': product_image, 'name': title, 'link': link})
+                offers.append({'price': price, 'description': description, 'rating': rating, 'image': product_image, 'name': title, 'link': link})
         except Exception as e:
             print(e)
             print("(get_real_time) experienced an error")
