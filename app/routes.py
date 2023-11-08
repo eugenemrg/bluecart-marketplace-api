@@ -45,7 +45,7 @@ class Profile(Resource):
         user = User.query.filter_by(id = user_details["id"]).first()
         
         # Update account details for the user
-        user.email = profile_ns.payload["email"]
+        user.email = profile_ns.payload["username"]
         user.password = profile_ns.payload["password"]
         db.session.commit()
         return user
