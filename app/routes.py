@@ -184,7 +184,7 @@ class Search(Resource):
 def get_aliexpress(search_query):
         url = f"https://axesso-walmart-data-service.p.rapidapi.com/wlm/walmart-search-by-keyword?keyword={search_query}&page=1&sortBy=best_match"
         headers = {
-            "X-RapidAPI-Key": "0c13e6b05emshc2e7b58cc93b154p10e704jsnadbeb58f7621",
+            "X-RapidAPI-Key": "187882b51bmshe44dfc8172e8e0ep160f0djsn9e44e22eb233",
         }
         r = requests.get(url, headers=headers)
         
