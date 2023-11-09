@@ -321,11 +321,9 @@ def get_all(search_query):
         id = 1
         for product in results:
               product.update({"id": id})
-            #   rating = scrape()
-            #   product.update({"rating":rating})
               id += 1
 
-        # result = sortProducts(results)
+ 
         result = defaultCurrency(results)
         return result
 
@@ -375,27 +373,13 @@ def defaultCurrency(products):
                 i["price"] = str(new_price)
     return products
 
-# def marginalBenefit(products):
-#      marginal_benefits = []
-#      for i in range(1, len(products)):
 
-#         if ' ' in products[i]["rating"]:
-#             rating = float(products[i]["rating"].rsplit(' ')[0])
-#         else:
-#             rating = float(products[i]["rating"])
 
-#         try:
-#             review = float(products[i]["review"])
-#         except Exception as e:
-#             review = 1
 
-         
-#         min_price = float(products[i - 1]["price"].replace("$", "").replace(".", "").replace(",", ""))
-#         current_price = float(products[i]["price"].replace("$", "").replace(".", "").replace(",", ""))
-#         change_in_price = current_price - min_price
-#         rating = float(products[i]["rating"].rsplit(' ')[0])
-#         change_in_quantity = rating * review
-#         marginal_benefit = change_in_price / change_in_quantity
-#         marginal_benefits.append(marginal_benefit)
 
-#      return marginal_benefits 
+
+
+
+
+
+          
