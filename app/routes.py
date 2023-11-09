@@ -351,3 +351,78 @@ def sortProducts(products):
         available_products = availableProducts(products)
         sorted_products = sorted(available_products, key=lambda data: (data["price"].replace(',', '')), reverse=True)
         return sorted_products
+
+
+
+
+# def availableProducts(products):
+#       results = []
+      
+#       for product in products:
+#           if product["price"] == "" or product["price"] == None or product["price"].count("$") > 1:
+#               continue
+          
+#         #   if product["description"] == "" or product["description"] == None:
+#         #       continue
+          
+#           if product["rating"] == "" or product["rating"] == None:
+#               continue
+          
+#           if product["image"] == "" or product["image"] == None:
+#               continue
+          
+#         #   if product["title"] == "" or product["title"] == None:
+#         #       continue
+          
+#           if product["link"] == "" or product["link"] == None:
+#               continue
+          
+          
+#           results.append(product)
+          
+#       return results
+
+# def sortProducts(products):
+#         available_products = availableProducts(products)
+#         sorted_products = sorted(available_products, key=lambda data: (data["price"].replace(',', '')), reverse=True)
+#         return sorted_products
+
+
+
+# def defaultCurrency(products):
+#     for i in products:
+#         original_currency = i["price"]
+#         if "€" in original_currency:
+#             if original_currency.startswith("€"):
+#                 new_price = float(original_currency.replace(",", ".").replace("\xa0", "")) * 1.07
+#                 i["price"] =  str(new_price)
+#             elif original_currency.endswith("€"):
+#                 without_symbol = original_currency[:-1]
+#                 new_price = float(without_symbol.replace(",", ".").replace("\xa0", "")) * 1.07
+#                 i["price"] = str(new_price)
+#     return products
+
+# def marginalBenefit(products):
+#      marginal_benefits = []
+#      for i in range(1, len(products)):
+
+#         if ' ' in products[i]["rating"]:
+#             rating = float(products[i]["rating"].rsplit(' ')[0])
+#         else:
+#             rating = float(products[i]["rating"])
+
+#         try:
+#             review = float(products[i]["review"])
+#         except Exception as e:
+#             review = 1
+
+         
+#         min_price = float(products[i - 1]["price"].replace("$", "").replace(".", "").replace(",", ""))
+#         current_price = float(products[i]["price"].replace("$", "").replace(".", "").replace(",", ""))
+#         change_in_price = current_price - min_price
+#         rating = float(products[i]["rating"].rsplit(' ')[0])
+#         change_in_quantity = rating * review
+#         marginal_benefit = change_in_price / change_in_quantity
+#         marginal_benefits.append(marginal_benefit)
+
+#      return marginal_benefits 
