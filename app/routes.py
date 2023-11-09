@@ -228,7 +228,7 @@ def get_aliexpress(search_query):
         results = sortProducts(results)
         return results[:4]
         # return results
-    
+  
 def get_amazon(search_query):
         url = f"https://amazon-price1.p.rapidapi.com/search?keywords={search_query}&marketplace=ES"
         headers = {
@@ -250,10 +250,10 @@ def get_amazon(search_query):
         except Exception as e:
             print(e)
             print('(get_amazon) experienced an error')
-        
         results = sortProducts(results)
         return results[:4]
         # return results
+        
 def get_ebay(search_query):
         url = f"https://ebay-search-result.p.rapidapi.com/search/{search_query}"
         headers = {
@@ -278,14 +278,12 @@ def get_ebay(search_query):
         offers = sortProducts(offers)
         return offers[:4]
         # return offers
+        
 def get_real_time(search_query):
          
         url = f"https://real-time-product-search.p.rapidapi.com/search?q={search_query}&country=us&language=en"
         headers = {
             "X-RapidAPI-Key": "187882b51bmshe44dfc8172e8e0ep160f0djsn9e44e22eb233",
-
-
-
 
         }
         r = requests.get(url, headers=headers)
@@ -322,9 +320,16 @@ def get_all(search_query):
         for product in results:
               product.update({"id": id})
               id += 1
+
+        # result = sortProducts(results)
+        # MB = marginalBenefit(availableProducts(results))
+        # currency = defaultCurrency(sortProducts(results))
+        # MB = marginalBenefit(currency)
+    
+
+        # return   currency, MB
         result = defaultCurrency(results)
         return result
-
 
 def availableProducts(products):
       results = []
@@ -339,14 +344,15 @@ def availableProducts(products):
           if product["rating"] == "" or product["rating"] == None:
               continue
           
-        #   if product["image"] == "" or product["image"] == None:
-        #       continue
+          if product["image"] == "" or product["image"] == None:
+              continue
           
         #   if product["title"] == "" or product["title"] == None:
         #       continue
           
-        #   if product["link"] == "" or product["link"] == None:
-        #       continue
+          if product["link"] == "" or product["link"] == None:
+              continue
+          
           
           results.append(product)
           
@@ -356,7 +362,6 @@ def sortProducts(products):
         available_products = availableProducts(products)
         sorted_products = sorted(available_products, key=lambda data: (data["price"].replace(',', '')), reverse=True)
         return sorted_products
-
 
 def defaultCurrency(products):
     for i in products:
@@ -426,3 +431,37 @@ def defaultCurrency(products):
 
 
           
+=======
+#                i["price"] = "$" + str(new_price)
+#            elif original_currency.endswith("€"):
+#                without_symbol = original_currency[:-1]
+#                new_price = float(without_symbol.replace(",", ".").replace("\xa0", "")) * 1.07
+#                i["price"] = "$" + str(new_price)
+#    return products
+#
+#def marginalBenefit(products):
+#     marginal_benefits = []
+#     for i in range(1, len(products)):
+#
+#        if ' ' in products[i]["rating"]:
+#            rating = float(products[i]["rating"].rsplit(' ')[0])
+#        else:
+#            rating = float(products[i]["rating"])
+#
+#        try:
+#            review = float(products[i]["review"])
+#        except Exception as e:
+#            review = 1
+#
+#         
+#        min_price = float(products[i - 1]["price"].replace("$", "").replace(".", "").replace(",", ""))
+#        current_price = float(products[i]["price"].replace("$", "").replace(".", "").replace(",", ""))
+#        change_in_price = current_price - min_price
+#        rating = float(products[i]["rating"].rsplit(' ')[0])
+#        # review = float(products[i]['review'])
+#        # change_in_quantity = sum(rating) / len(rating)
+#        change_in_quantity = rating * review
+#        marginal_benefit = change_in_price / change_in_quantity
+#        marginal_benefits.append(marginal_benefit)
+#
+#     return marginal_benefits
