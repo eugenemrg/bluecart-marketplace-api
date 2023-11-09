@@ -43,3 +43,9 @@ req_history_model = api.model("User History Request", {
 res_login_model = api.model("Log In Response", {
     "access_token": fields.String
 })
+
+profile_details_model = api.model("Profile Details", {
+    "username": fields.String,
+    "email": fields.String,
+    "password": fields.String
+})
