@@ -224,8 +224,10 @@ def get_aliexpress(search_query):
                 print('(get_aliexpress) - Rate limit likely exceeded, results not included')
             else:
                 print("(get_aliexpress) - Encountered an error while processing your query")
-            
-        return results
+        
+        results = sortProducts(results)
+        return results[:4]
+        # return results
     
 def get_amazon(search_query):
         url = f"https://amazon-price1.p.rapidapi.com/search?keywords={search_query}&marketplace=ES"
@@ -248,8 +250,10 @@ def get_amazon(search_query):
         except Exception as e:
             print(e)
             print('(get_amazon) experienced an error')
-
-        return results
+        
+        results = sortProducts(results)
+        return results[:4]
+        # return results
 def get_ebay(search_query):
         url = f"https://ebay-search-result.p.rapidapi.com/search/{search_query}"
         headers = {
@@ -271,7 +275,9 @@ def get_ebay(search_query):
             print(e)
             print("(get_ebay) experienced an error")
         
-        return offers
+        offers = sortProducts(offers)
+        return offers[:4]
+        # return offers
 def get_real_time(search_query):
          
         url = f"https://real-time-product-search.p.rapidapi.com/search?q={search_query}&country=us&language=en"
@@ -301,7 +307,9 @@ def get_real_time(search_query):
             print(e)
             print("(get_real_time) experienced an error")
         
-        return offers
+        offers = sortProducts(offers)
+        return offers[:4]
+        # return offers
 
 
 def get_all(search_query):
@@ -317,7 +325,8 @@ def get_all(search_query):
             #   product.update({"rating":rating})
               id += 1
 
-        result = sortProducts(results)
+        # result = sortProducts(results)
+        result = defaultCurrency(results)
         return result
 
 
@@ -353,54 +362,18 @@ def sortProducts(products):
         return sorted_products
 
 
-
-
-# def availableProducts(products):
-#       results = []
-      
-#       for product in products:
-#           if product["price"] == "" or product["price"] == None or product["price"].count("$") > 1:
-#               continue
-          
-#         #   if product["description"] == "" or product["description"] == None:
-#         #       continue
-          
-#           if product["rating"] == "" or product["rating"] == None:
-#               continue
-          
-#           if product["image"] == "" or product["image"] == None:
-#               continue
-          
-#         #   if product["title"] == "" or product["title"] == None:
-#         #       continue
-          
-#           if product["link"] == "" or product["link"] == None:
-#               continue
-          
-          
-#           results.append(product)
-          
-#       return results
-
-# def sortProducts(products):
-#         available_products = availableProducts(products)
-#         sorted_products = sorted(available_products, key=lambda data: (data["price"].replace(',', '')), reverse=True)
-#         return sorted_products
-
-
-
-# def defaultCurrency(products):
-#     for i in products:
-#         original_currency = i["price"]
-#         if "€" in original_currency:
-#             if original_currency.startswith("€"):
-#                 new_price = float(original_currency.replace(",", ".").replace("\xa0", "")) * 1.07
-#                 i["price"] =  str(new_price)
-#             elif original_currency.endswith("€"):
-#                 without_symbol = original_currency[:-1]
-#                 new_price = float(without_symbol.replace(",", ".").replace("\xa0", "")) * 1.07
-#                 i["price"] = str(new_price)
-#     return products
+def defaultCurrency(products):
+    for i in products:
+        original_currency = i["price"]
+        if "€" in original_currency:
+            if original_currency.startswith("€"):
+                new_price = float(original_currency.replace(",", ".").replace("\xa0", "")) * 1.07
+                i["price"] =  str(new_price)
+            elif original_currency.endswith("€"):
+                without_symbol = original_currency[:-1]
+                new_price = float(without_symbol.replace(",", ".").replace("\xa0", "")) * 1.07
+                i["price"] = str(new_price)
+    return products
 
 # def marginalBenefit(products):
 #      marginal_benefits = []
