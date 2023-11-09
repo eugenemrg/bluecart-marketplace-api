@@ -1,3 +1,4 @@
+import os
 from flask import Flask
 from flask_cors import CORS
 from .extensions import api, db, migrate, bcrypt, jwt
@@ -8,7 +9,7 @@ def create_app():
     
     CORS(app)
     
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI')
     app.config["JWT_SECRET_KEY"] = "phase5JWTkey"
     
     api.init_app(app)
