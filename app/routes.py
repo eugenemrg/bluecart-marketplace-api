@@ -306,7 +306,8 @@ def get_all(search_query):
               id += 1
 
         result = sortProducts(results)
-        return result
+        currency = defaultCurrency(results)
+        return result, currency
 
 
 def availableProducts(products):
@@ -339,3 +340,52 @@ def sortProducts(products):
         available_products = availableProducts(products)
         sorted_products = sorted(available_products, key=lambda data: (data["price"].replace(',', '')), reverse=True)
         return sorted_products
+
+
+# def defaultCurrency(products):
+
+#     for i in products:
+#         original_currency = i["price"]
+#         try:
+#             if "€" in original_currency:
+#                 if original_currency.startswith("€"):
+#                     new_price = float(original_currency) * 1.07
+#                     i["price"] = "$" + str(new_price)
+#                 elif original_currency.endswith("€"):
+#                     without_symbol = original_currency[:-1]
+#                     new_price = float(without_symbol) * 1.07
+#                     i["price"] = "$" + str(new_price)
+#         except ValueError:
+#             continue
+#     return products
+
+def defaultCurrency(products):
+    for i in products:
+        original_currency = i["price"]
+        if "€" in original_currency:
+            if original_currency.startswith("€"):
+                new_price = float(original_currency.replace(",", ".").replace("\xa0", "")) * 1.07
+                i["price"] = "$" + str(new_price)
+            elif original_currency.endswith("€"):
+                without_symbol = original_currency[:-1]
+                new_price = float(without_symbol.replace(",", ".").replace("\xa0", "")) * 1.07
+                i["price"] = "$" + str(new_price)
+    return products
+
+def marginalBenefit(products):
+     pass
+
+
+               
+               
+
+
+
+
+
+             
+                       
+               
+     
+     
+     
