@@ -431,7 +431,7 @@ def defaultCurrency(products):
 
 
           
-=======
+# =======
 #                i["price"] = "$" + str(new_price)
 #            elif original_currency.endswith("€"):
 #                without_symbol = original_currency[:-1]
