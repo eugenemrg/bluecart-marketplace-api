@@ -1,8 +1,8 @@
-"""Initial db set-up
+"""Migrated DB to Postgres service
 
-Revision ID: 660c0aed766f
+Revision ID: 409c31598f7b
 Revises: 
-Create Date: 2023-11-04 11:33:38.345837
+Create Date: 2023-11-09 11:19:47.693249
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '660c0aed766f'
+revision = '409c31598f7b'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -31,7 +31,7 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=True),
     sa.Column('name', sa.String(), nullable=True),
-    sa.Column('search_date', sa.DateTime(), nullable=True),
+    sa.Column('search_date', sa.DateTime(), nullable=False),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id')
     )

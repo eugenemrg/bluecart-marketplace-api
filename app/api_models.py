@@ -10,7 +10,7 @@ user_history_model = api.model("User History", {
 
 user_updated_profile_model = api.model("Updated User Profile", {
     "username": fields.String,
-    "email": fields.String
+    "password": fields.String
 })
 
 user_profile_model = api.model("User Profile", {
@@ -42,4 +42,10 @@ req_history_model = api.model("User History Request", {
 # Expected response formats
 res_login_model = api.model("Log In Response", {
     "access_token": fields.String
+})
+
+profile_details_model = api.model("Profile Details", {
+    "username": fields.String,
+    "email": fields.String,
+    "password": fields.String
 })

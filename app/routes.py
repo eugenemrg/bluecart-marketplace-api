@@ -1,6 +1,6 @@
 from exceptiongroup import catch
 from flask_restx import Resource, Namespace
-from .api_models import user_profile_model, user_history_model, user_updated_profile_model, req_signup_model, req_login_model, res_login_model, req_search_model, req_history_model
+from .api_models import profile_details_model ,user_profile_model, user_history_model, user_updated_profile_model, req_signup_model, req_login_model, res_login_model, req_search_model, req_history_model
 from .models import SearchHistory, User
 from .extensions import db, api
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required, get_jwt
@@ -13,6 +13,18 @@ history_ns = Namespace('history', description='Get, update or delete user histor
 
 @profile_ns.route('')
 class Profile(Resource):
+    
+    @jwt_required()
+    @profile_ns.marshal_with(profile_details_model)
+    def get(self):
+        """
+        Get the user account details
+        """
+        user_details = get_jwt_identity()
+        user = User.query.filter_by(id = user_details["id"]).first()
+        
+        return user
+    
     @profile_ns.expect(req_signup_model)
     def post(self):
         """
@@ -46,7 +58,7 @@ class Profile(Resource):
         
         # Update account details for the user
         user.username = profile_ns.payload["username"]
-        user.password = profile_ns.payload["password"]
+        user.password_hash = profile_ns.payload["password"]
         db.session.commit()
         return user
     
