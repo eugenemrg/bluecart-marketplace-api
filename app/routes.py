@@ -400,25 +400,25 @@ def defaultCurrency(products):
 
 #      return marginal_benefit
 
-def marginalBenefit(products):
-    for i in products:
-        if ' ' in products.keys[i]["rating"]:
-            rating = float(products[i]["rating"].rsplit(' ')[0])
-        else:
-            rating = float(products[i]["rating"])
-        try:
-            review = float(products[i]["review"])
-        except Exception as e:
-            review = 1
+# def marginalBenefit(products):
+#     for i in products:
+#         if ' ' in products.keys[i]["rating"]:
+#             rating = float(products[i]["rating"].rsplit(' ')[0])
+#         else:
+#             rating = float(products[i]["rating"])
+#         try:
+#             review = float(products[i]["review"])
+#         except Exception as e:
+#             review = 1
 
-        min_price = float(products[list(products())[i - 1]]["price"].replace("$", "").replace(".", "").replace(",", "").replace("\xa0", "").replace("€", ""))
-        current_price = float(products[i]["price"].replace("$", "").replace(".", "").replace(",", "").replace("\xa0", "").replace("€", ""))
-        change_in_price = current_price - min_price
-        rating = float(products[i]["rating"].rsplit(' ')[0])
-        change_in_quantity = rating * review
-        marginal_benefit = change_in_price / change_in_quantity
+#         min_price = float(products[list(products())[i - 1]]["price"].replace("$", "").replace(".", "").replace(",", "").replace("\xa0", "").replace("€", ""))
+#         current_price = float(products[i]["price"].replace("$", "").replace(".", "").replace(",", "").replace("\xa0", "").replace("€", ""))
+#         change_in_price = current_price - min_price
+#         rating = float(products[i]["rating"].rsplit(' ')[0])
+#         change_in_quantity = rating * review
+#         marginal_benefit = change_in_price / change_in_quantity
 
-        return marginal_benefit
+#         return marginal_benefit
 
 
 
