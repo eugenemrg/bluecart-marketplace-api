@@ -283,7 +283,7 @@ def get_real_time(search_query):
          
         url = f"https://real-time-product-search.p.rapidapi.com/search?q={search_query}&country=us&language=en"
         headers = {
-            "X-RapidAPI-Key": "187882b51bmshe44dfc8172e8e0ep160f0djsn9e44e22eb233",
+            "X-RapidAPI-Key": "8f9c5d2a43msh04d0a3420c2e09bp156401jsn9667246efdc5",
 
         }
         r = requests.get(url, headers=headers)
