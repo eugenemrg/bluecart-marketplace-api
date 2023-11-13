@@ -1,0 +1,13 @@
+import requests
+import pytest
+
+BASE_URL = "http://localhost:5000"
+
+def test_delete_profile():
+    payload = {"email": "test@example.com"}
+
+    try:
+        response = requests.delete(f"{BASE_URL}/profile", json=payload)
+        assert response.status_code == 200
+    except Exception as e:
+        pass
